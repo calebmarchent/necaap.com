@@ -17,14 +17,25 @@ def preferred_sites():
         batch_size = len(j["data"])
         for f in j["data"]:
             yield [x["value"] for x in f["fields"] if x["name"]
-                   == "whichSiteAreaDoYouThinkIsTheMostSuitableForTheRelocationProject"]
+                 == "whichSiteAreaDoYouThinkIsTheMostSuitableForTheRelocationProject"]
         idx = idx + batch_size
 
 g = preferred_sites()
 
 responses = 0
+totals = {}
 for v in g:
     responses += 1
-    print(v)
+    flattened_response = [item for sublist in v for item in sublist]
+    flattened_response.sort()
+    ident = ", ".join(flattened_response)
+    if ident in totals:
+        totals[ident] += 1
+    else:
+        totals[ident] = 1
+    print(ident)
 
 print(f"{responses} responses counted")
+print("Totals:")
+for s, v in totals.items():
+    print(f"  {s}: {v}")
